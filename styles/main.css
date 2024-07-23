@@ -2,7 +2,9 @@
     width: 40%;
     margin-left: 1rem;
 }
-
+main{
+    min-height: 78vh;
+}
 
 #navbarNavAltMarkup{
     justify-content: end;
@@ -50,6 +52,7 @@
 }
 .card{
     width: 18rem;
+    box-shadow:0 0 15px rgba(185, 108, 108, 0.936);;
 }
 .card-img-top{
     height: 50%;
@@ -61,9 +64,6 @@
 .container-form{
     display: flex;
     justify-content: center;
-}
-form{
-    width: 50%;
 }
 
 #cardbody{

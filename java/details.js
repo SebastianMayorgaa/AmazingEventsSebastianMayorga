@@ -1,4 +1,3 @@
-
 const data = {
     currentDate: "2023-01-01",
     events: [
@@ -196,94 +195,38 @@ const data = {
     ],
 };
 
+let urlParams = new URLSearchParams (window.location.search)
+let eventId = urlParams.get('id')
 
-function checkboxes(events) {
-    const categories = Array.from(new Set(events.map(event => event.category)));
-    const checkboxContainer = document.getElementById('formContent');
-    
-    categories.forEach(category => {
-        let checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.value = category;
-        checkbox.className = 'category-checkbox';
-        checkbox.id = `checkbox-${category}`;
-
-        let label = document.createElement('label');
-        label.htmlFor = `checkbox-${category}`;
-        label.textContent = category;
-
-        div = document.createElement('div');
-        div.appendChild(checkbox);
-        div.appendChild(label);
-
-        checkboxContainer.appendChild(div);
-    });
+let eventSelected;
+for (let i = 0; i < data.events.length; i++) {
+    if (data.events[i]._id === eventId) {
+        eventSelected = data.events[i];
+    }
 }
 
-function upcoming(events) {
-    let container = document.getElementById("card-container");
-    container.innerHTML= ''
-    let currentDate = new Date(data.currentDate); 
-    if (events.length === 0 ) {
-        container.innerHTML = "It seems we don't have this event available 😟​"
-        return
-    }
-    for (let i = 0; i < events.length; i++) {
-      let eventDate = new Date(events[i].date);
-      if (eventDate >= currentDate) {
-        let event = events[i];
-        let card = document.createElement("div");
-        card.className = "card text-center";
-        card.innerHTML = `
-          <img src="${event.image}" class="card-img-top" alt="${event.name}">
-          <div class="card-body bg-danger-subtle">
-              <h5 class="card-title">${event.name}</h5>
+function cardDetails(event) {
+
+let detailsContainer = document.getElementById('detailsCard')
+detailsContainer.innerHTML =`
+<div class="container d-flex justify-content-center ">
+      <div class="card w-75 mb-3 bg-danger-subtle">
+        <div class="row g-0">
+          <div class="col-md-6 align-content-center">
+            <img src="${event.image}" class="img-fluid rounded-start" alt="${event.name}">
+          </div>
+          <div class="col-md-6 align-content-center justify-content-center">
+            <div id="cardbody" class="card-body  h-90">
+              <h5 class="card-title text-center">${event.name}</h5>
               <p class="card-text">${event.description}</p>
-              <div class="price-details d-flex justify-content-between">
-                  <p class="price">Price: $${event.price}</p>
-                  <a href="../pages/details.html?id=${event._id}" class="btn btn-outline-danger">Details</a>
-              </div>
-          </div>`;
-        container.appendChild(card);
-      }
-    }
-  }
-  document.getElementById('textEvent').addEventListener('keyup', filters);
-  document.getElementById('formContent').addEventListener('click', (e) => {
-      if (e.target.classList.contains('category-checkbox')) {
-          filters();
-      }
-  });
-  
-  function textFilter(events, text) {
-      return events.filter(event => {
-          return event.name.toLowerCase().includes(text) || event.description.toLowerCase().includes(text);
-      });
-  }
-  
-  function checkboxFilter(events, categories) {
-      if (categories.length === 0) {
-          return events;
-      }
-      return events.filter(event => {
-          return categories.includes(event.category);
-      });
-  }
-  
-  function filters() {
-      let textSearch = document.getElementById('textEvent').value.toLowerCase();
-      let checkboxes = Array.from(document.querySelectorAll('.category-checkbox:checked')).map(cb => cb.value);
-  
-      let filteredByText = textFilter(data.events, textSearch);
-      let filteredByCheckbox = checkboxFilter(filteredByText, checkboxes);
-  
-      upcoming(filteredByCheckbox);
-  }
-  
-    checkboxes(data.events);
-    upcoming(data.events);   
+              <p>Where:  ${event.place}</p>
+              <p>When: ${event.date}</p>
+              <p>Price: ${event.price}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> `
+}
 
- 
-
-
-  
+cardDetails(eventSelected)

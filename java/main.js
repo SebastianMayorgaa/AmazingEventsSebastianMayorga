@@ -196,10 +196,43 @@ const data = {
 };
 
 
+function checkboxes(events) {
+    const categories = Array.from(new Set(events.map(event => event.category)));
+    const checkboxContainer = document.getElementById('formContent');
+    
+    categories.forEach(category => {
+        let checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.value = category;
+        checkbox.className = 'category-checkbox';
+        checkbox.id = `checkbox-${category}`;
+
+        let label = document.createElement('label');
+        label.htmlFor = `checkbox-${category}`;
+        label.textContent = category;
+
+        let text = document.createElement('input')
+        text.type = 'text'
+
+        div = document.createElement('div');
+        div.appendChild(checkbox);
+        div.appendChild(label);
+
+        checkboxContainer.appendChild(div);
+    });
+}
+
+
+
 function cards(events) {
     let container = document.getElementById("card-container");
-  
-    for (let i = 0; i <= events.length; i++) {
+    container.innerHTML = ''
+
+    if (events.length === 0 ) {
+        container.innerHTML = "It seems we don't have this event available 😟​"
+        return
+    }
+    for (let i = 0; i < events.length; i++) {
       let event = events[i]; 
       let card = document.createElement('div');
       card.className = "card text-center";
@@ -210,13 +243,46 @@ function cards(events) {
             <p class="card-text">${event.description}</p>
             <div class="price-details d-flex justify-content-between">
                 <p class="price">Price: $${event.price}</p>
-                <a href="./pages/details.html" class="btn btn-outline-danger">Details</a>
+                <a href="./pages/details.html?id=${event._id}" class="btn btn-outline-danger">Details</a>
             </div>
         </div>`;
       container.appendChild(card);
     }
   }
-  
+
+document.getElementById('textEvent').addEventListener('keyup', filters);
+document.getElementById('formContent').addEventListener('click', (e) => {
+    if (e.target.classList.contains('category-checkbox')) {
+        filters();
+    }
+});
+
+function textFilter(events, text) {
+    return events.filter(event => {
+        return event.name.toLowerCase().includes(text) || event.description.toLowerCase().includes(text);
+    });
+}
+
+function checkboxFilter(events, categories) {
+    if (categories.length === 0) {
+        return events;
+    }
+    return events.filter(event => {
+        return categories.includes(event.category);
+    });
+}
+
+function filters() {
+    let textSearch = document.getElementById('textEvent').value.toLowerCase();
+    let checkboxes = Array.from(document.querySelectorAll('.category-checkbox:checked')).map(cb => cb.value);
+
+    let filteredByText = textFilter(data.events, textSearch);
+    let filteredByCheckbox = checkboxFilter(filteredByText, checkboxes);
+
+    cards(filteredByCheckbox);
+}
+
+  checkboxes(data.events);
   cards(data.events);   
 
   
